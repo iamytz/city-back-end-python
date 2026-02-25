@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Mapa de Denuncias</title>
+    <meta charset="UTF-8" />
+    <!-- CSS do Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+
+<body>
+    <h1>Mapa de Denuncias </h1>
+    <div id="mapid" style="height: 600px;"></div>
+    <input type="button" value="Voltar" onclick="btn_voltar()">
+    <input type="button" value="Carregar" onclick="carregar_mapa()">
+
+    <!-- JS do Leaflet -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Inicializa o mapa centrado em Caraguatatuba, Brasil (latitude/longitude aproximadas)
+        var map = L.map('mapid').setView([-23.6, -45.4], 13);
+
+        // Usa tiles do OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Adiciona um marcador
+        L.marker([-23.667, -45.433]).addTo(map)
+            .bindPopup('Caraguatatuba, SP')
+            .openPopup(); // só o primeiro abre automático
+
+
+    </script>
+
+
+    <script>
+        function btn_voltar() {
+            window.location.href = "/"
+        }
+    </script>
+
+    <script>
+        function carregar_mapa() {
+
+            fetch("/api/mapa")
+                .then(resposta => resposta.json())
+                .then(dados => {
+                    for (let i = 0; i < dados.length; i++) {
+                        console.log(dados[i]);
+                        let lat = dados[i].latitude
+                        let lon = dados[i].longitude
+
+                        lat = Number(lat)
+                        lon = Number(lon)
+
+
+                        let titulo = dados[i].titulo
+                        L.marker([lon, lat]).addTo(map)
+                            .bindPopup(titulo)
+                        //.openPopup();
+                    }
+
+
+
+                });
+        }
+
+    </script>
+
+</body>
+
+</html>

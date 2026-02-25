@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>
+       <form >
+        <input type="text" name="USER" id="user">
+        <input type="text" name="PWD" id="pwd">
+        <button type="button" onclick="enviar_ao_back()">Enviar</button>
+       </form>
+    </h1>
+</body>
+<script>
+    function enviar_ao_back(){
+        let user = document.getElementById('user').value
+        let pwd = document.getElementById('pwd').value
+        console.log(user)
+        console.log(pwd)
+
+    }
+</script>
+</html>
