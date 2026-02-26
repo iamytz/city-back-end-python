@@ -1,6 +1,7 @@
-from flask import Flask, render_template,jsonify,json
+from flask import Flask, render_template,jsonify, request
 import pyodbc
 import requests
+import re
 
 app = Flask(__name__)
 
@@ -17,8 +18,6 @@ def connect_database():
     cursor = conn.cursor()
     return conn,cursor
 
-#   ====================================================
-
 try:
     conn,cursor = connect_database()
     print("Conexão Realizada Com Sucesso!!")
@@ -29,6 +28,25 @@ except Exception as e:
 
 finally:
     conn.close()
+#   ====================================================
+
+#   === TRATANDO DADOS  ===
+def validar_email(email):
+    email = str(email).replace(" ",'')
+        # Regex simples para validar formato de e-mail
+    padrao = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if re.match(padrao, email):
+        return True
+    return False
+
+
+
+
+
+
+
+
+
 
 #   === DECLARANDO ROTAS === 
 
@@ -60,7 +78,7 @@ def mapa():
 
 #   === API CALL ===
 
-@app.route("/api/mapa",methods=['GET'])
+@app.route("/api/get/mapa",methods=['GET'])
 def api_mapa():
     try:
         loc = []
@@ -80,17 +98,32 @@ def api_mapa():
         conn.close()
     return jsonify(loc)
 
-
 @app.route('/api/cep/<cep>',methods=['GET'])
 def carregar_cep(cep):
     cep = str(cep).replace("-",'').strip()
     json_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/")
     return jsonify(json_cep)
     
+@app.route("/api/post/login",methods=['POST'])
+def api_post_login():
+    try:
+        dados = request.get_json()
+        email = dados.get('email')
+        pwd = dados.get('pwd')
 
-
-
-
+        conn,cursor = connect_database()
+        cursor = conn.cursor()
+        query = 'select senha from login where email =?'
+        cursor.execute(query,(email,))
+        row = cursor.fetchone()
+        if row and row[0] == pwd:
+            return jsonify({"status":"ok"})
+        else:
+            return jsonify({"status":"negado"})
+    except Exception as e:
+        return jsonify({'Erro':e})
+    finally:
+        print("Testando api")
 
 
 

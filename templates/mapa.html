@@ -43,7 +43,7 @@
     <script>
         function carregar_mapa() {
 
-            fetch("/api/mapa")
+            fetch("/api/get/mapa")
                 .then(resposta => resposta.json())
                 .then(dados => {
                     for (let i = 0; i < dados.length; i++) {
