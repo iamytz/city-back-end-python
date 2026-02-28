@@ -26,9 +26,9 @@
         }).addTo(map);
 
         // Adiciona um marcador
-        L.marker([-23.667, -45.433]).addTo(map)
-            .bindPopup('Caraguatatuba, SP')
-            .openPopup(); // só o primeiro abre automático
+        //L.marker([-23.667, -45.433]).addTo(map)
+            //.bindPopup('Caraguatatuba, SP')
+            //].openPopup(); // só o primeiro abre automático
 
 
     </script>
@@ -58,7 +58,7 @@
                         let titulo = dados[i].titulo
                         L.marker([lon, lat]).addTo(map)
                             .bindPopup(titulo)
-                        //.openPopup();
+                        .openPopup();
                     }
 
 

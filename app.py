@@ -1,9 +1,12 @@
-from flask import Flask, render_template,jsonify, request
+from flask import Flask, render_template,jsonify, request, session
 import pyodbc
 import requests
 import re
+from functools import wraps
+
 
 app = Flask(__name__)
+app.secret_key = 'qualquer_coisa_super_secreta'
 
 #   === CONEXÃO COM O BANCO DE DADOS   ===  
 
@@ -30,7 +33,7 @@ finally:
     conn.close()
 #   ====================================================
 
-#   === TRATANDO DADOS  ===
+#   === ARMAZENANDO DEFS  ===
 def validar_email(email):
     email = str(email).replace(" ",'')
         # Regex simples para validar formato de e-mail
@@ -39,8 +42,13 @@ def validar_email(email):
         return True
     return False
 
-
-
+def loguin_required(f):
+    @wraps(f)
+    def decorated_function(*args,**kwargs):
+        if "id" not in session:
+            return jsonify({"error": "not authenticated"}), 401
+        return f(*args,**kwargs)
+    return decorated_function
 
 
 
@@ -55,14 +63,14 @@ def login():
     return render_template('login.html')
 
 @app.route("/index")
+@loguin_required
 def index():
     return render_template("index.html")
 
 @app.route('/mapa')
+@loguin_required
 def mapa():
     return render_template('mapa.html')
-
-
 
 
 
@@ -97,8 +105,10 @@ def api_mapa():
     finally:
         conn.close()
     return jsonify(loc)
+@loguin_required
 
 @app.route('/api/cep/<cep>',methods=['GET'])
+@loguin_required
 def carregar_cep(cep):
     cep = str(cep).replace("-",'').strip()
     json_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/")
@@ -113,21 +123,26 @@ def api_post_login():
 
         conn,cursor = connect_database()
         cursor = conn.cursor()
-        query = 'select senha from login where email =?'
+        query = 'select senha,id,nome from login where email =?'
         cursor.execute(query,(email,))
         row = cursor.fetchone()
-        if row and row[0] == pwd:
-            return jsonify({"status":"ok"})
+        if row is None or row[0] != pwd:
+            return jsonify({
+                "status": "error",
+                "message": "Invalid credentials"
+                })          
         else:
-            return jsonify({"status":"negado"})
+            session['id'] = row[1]
+            return jsonify({
+                "status": "success",
+                "message": "Login accepted"
+                })
+
     except Exception as e:
         return jsonify({'Erro':e})
     finally:
+        conn.close()
         print("Testando api")
-
-
-
-
 
 
 

@@ -28,6 +28,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: "include", // 👈 ESSENCIAL
             body: JSON.stringify({
                 email: email,
                 pwd: pwd
@@ -36,6 +37,12 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data)
+                
+                if (data.status === 'success') {
+                    window.location.href = '/home'
+                } else {
+                    document.getElementById('erro').innerText = 'Credenciais inválidas'
+                }
             })
     }
 </script>
