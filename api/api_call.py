@@ -1,11 +1,14 @@
 from flask import Blueprint,jsonify,request,session
 import requests
 
-from database.__init__ import connect_database
-from secure.__init__ import loguin_required
+from database.projeto_mapa import connect_database
+from secure.secure_routes import loguin_required
+
+
 api_bp = Blueprint('api',__name__,template_folder='templates')
 
 @api_bp.route("/api/get/mapa",methods=['GET'])
+@loguin_required
 def api_mapa():
     try:
         loc = []
@@ -26,13 +29,6 @@ def api_mapa():
     return jsonify(loc)
 @loguin_required
 
-@api_bp.route('/api/cep/<cep>',methods=['GET'])
-@loguin_required
-def carregar_cep(cep):
-    cep = str(cep).replace("-",'').strip()
-    json_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/")
-    return jsonify(json_cep)
-    
 @api_bp.route("/api/post/login",methods=['POST'])
 def api_post_login():
     try:

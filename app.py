@@ -1,18 +1,18 @@
 from flask import Flask
 
-from api.index import api_bp
-from routes.index import index_bp
+from api.api_call import api_bp
+from routes.routes import index_bp
+import secrets
 
 app = Flask(__name__)
-app.secret_key = 'qualquer_coisa_super_secreta'
-
- 
+app.secret_key = secrets.token_hex(16)  # gera uma chave aleatória de 32 caracteres hexadecimais 
 
 
 #   === DECLARANDO ROTAS === 
 
 app.register_blueprint(index_bp)
 app.register_blueprint(api_bp)
+
 
 
 

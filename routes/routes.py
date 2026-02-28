@@ -1,5 +1,5 @@
 from flask import Blueprint,render_template
-from secure.__init__ import loguin_required
+from secure.secure_routes import loguin_required
 
 index_bp= Blueprint('index',__name__,template_folder='templates')
 
