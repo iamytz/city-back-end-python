@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Login</title>
+</head>
+<body>
+    <form>
+        <input type="text" name="nome" id="nome">
+        <input type="text" name="email" id="email">
+        <input type="text" name="pwd" id="pwd">
+        <input type="button" value="Enviar", onclick='try_create_login()'>
+    </form> 
+</body>
+<script>
+    function try_create_login() {
+        let nome = document.getElementById('nome').value
+        let email = document.getElementById('email').value
+        let pwd = document.getElementById('pwd').value
+
+        fetch('/api/post/create/login', {
+            method: 'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                nome:nome,
+                email:email,
+                pwd:pwd
+            })
+        })
+        .then(Response => Response.json())
+        .then(data => {
+            console.log(data)
+
+        })
+
+
+        console.log(nome)
+        console.log(email)
+        console.log(pwd)
+    }
+</script>
+</html>

@@ -2,10 +2,10 @@ from flask import Flask
 
 from api.api_call import api_bp
 from routes.routes import index_bp
-import secrets
+from util.security_key import security_key
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)  # gera uma chave aleatória de 32 caracteres hexadecimais 
+app.secret_key = security_key()
 
 
 #   === DECLARANDO ROTAS === 

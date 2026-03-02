@@ -1,20 +1,20 @@
-import pyodbc
+import pymysql
 
 #   === CONEXÃO COM O BANCO DE DADOS   === 
 
 def connect_database():
-    conn = pyodbc.connect(
-    'DRIVER={MySQL ODBC 9.4 ANSI Driver};'
-    'SERVER=localhost;'
-    'DATABASE=projeto_mapa;'
-    'UID=root;'
-    'PWD=1234;'
+    conn = pymysql.connect(
+    host='localhost',
+    user='root',
+    password='1234',
+    database='projeto_mapa',
+    charset='utf8mb4'
     )
-    cursor = conn.cursor()
-    return conn,cursor
+    
+    return conn
 
 try:
-    conn,cursor = connect_database()
+    conn = connect_database()
     print("Conexão Realizada Com Sucesso!!")
 
 except Exception as e:
